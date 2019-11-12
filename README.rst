@@ -26,7 +26,21 @@ Tools to create,,  export and share video maps
 Features
 --------
 
-* TODO
+* Convert a series of tiled maps to a tiled video
+
+`videomap convert ~/data/frames`
+
+Where ~/data/frames contains frames in the structure
+
+`~/data/frames/{frame}/{z}/{x}/{y}.png`
+
+frame:  the frame number
+z: zoom level
+x: tile column
+y: tile row
+
+* Png's are converted to transparent webm contained vp8 with alpha channel.
+
 
 Credits
 -------
