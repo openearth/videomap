@@ -30,7 +30,7 @@ Features
 
 .. code:: sh
 
-    videomap convert ~/data/frames`
+    videomap convert ~/data/frames
 
 Where ~/data/frames contains frames in the structure
 
