@@ -28,11 +28,12 @@ Features
 
 * Convert a series of tiled maps to a tiled video
 
-`videomap convert ~/data/frames`
+.. code:: sh
+    videomap convert ~/data/frames`
 
 Where ~/data/frames contains frames in the structure
-
-`~/data/frames/{frame}/{z}/{x}/{y}.png`
+.. code:: sh
+    ~/data/frames/{frame}/{z}/{x}/{y}.png
 
 frame:  the frame number
 z: zoom level
