@@ -31,6 +31,12 @@ Features
 .. code:: sh
 
     videomap convert ~/data/frames
+    
+* Interpolate a series of tiled map videos 
+
+.. code:: sh
+
+    videomap interpolate ~/data/frames 
 
 Where ~/data/frames contains frames in the structure
 
