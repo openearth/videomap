@@ -13,9 +13,6 @@ import numpy as np
 import videomap.streams
 
 
-png_bytes = b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x01\x00\x08\x06\x00\x00\x00\\r\xa8f\x00\x00\x00\x04sBIT\x08\x08\x08\x08|\x08d\x88\x00\x00\x00\tpHYs\x00\x00\x0fa\x00\x00\x0fa\x01\xa8?\xa7i\x00\x00\x01\x15IDATx\x9c\xed\xc11\x01\x00\x00\x00\xc2\xa0\xf5O\xedk\x08\xa0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00x\x03\x01<\x00\x01<\xedS\t\x00\x00\x00\x00IEND\xaeB`\x82'
-
-
 frame_pattern = re.compile(
     r'(?P<frame>\d+)/(?P<zoom>\d+)/(?P<column>\d+)/(?P<row>\d+)\.(png|jpg)$'
 )
@@ -27,8 +24,9 @@ def cli():
 @cli.command()
 @click.argument('frames_dir', type=click.Path(exists=True))
 @click.argument('result_dir', type=click.Path(exists=False))
-@click.option('--to512/--no-to512', is_flag=True, default=True, help='Generate tiles in 512x512 size.')
-def convert(frames_dir, result_dir, to512):
+@click.option('--frame-size', type=click.Choice([512, 256]), default=512, help='Generate tiles with custom framesize (e.g. 512).')
+@click.option('--blend', is_flag=True, default=False, help='Generate interpolated videos.')
+def convert(frames_dir, result_dir, frame_size, blend):
     """Console script for videomap."""
     # convert to path
     frames_dir = pathlib.Path(frames_dir)
@@ -53,7 +51,7 @@ def convert(frames_dir, result_dir, to512):
     tiles_df = pd.DataFrame(rows).infer_objects()
 
     # if we do 512 frames we only need the even  frames
-    if to512:
+    if frame_size == 512:
         idx_512 = np.logical_and.reduce([
             tiles_df.column % 2 == 0,
             tiles_df.row % 2 == 0,
@@ -64,11 +62,8 @@ def convert(frames_dir, result_dir, to512):
     # Convert all images per frame
     for (zoom, col, row), frames in tiles_df.groupby(['zoom', 'column', 'row']):
         # define the path of the  videos
-        if to512:
-            fill_missing_pngs(frames_dir, zoom, col, row)
-            stream = videomap.streams.make_stream(frames_dir, result_dir,  zoom, col, row)
-        else:
-            stream = videomap.streams.make_stream_256(frames_dir, result_dir,  zoom, col, row)
+        videomap.streams.fill_missing_pngs(frames_dir, zoom, col, row)
+        stream = videomap.streams.make_stream(frames_dir, result_dir,  zoom, col, row, frame_size=frame_size, blend=blend)
 
         stream.run()
 
