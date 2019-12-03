@@ -11,10 +11,10 @@ def stack_2x2(input_dir, zoom, col, row, frame_pattern='%05d', **kwargs):
     # define 4  streams
     input_dir = pathlib.Path(input_dir)
     inputs = [
-        ffmpeg.input(input_dir / frame_pattern / '{zoom}/{col}/{row}.png'.format(zoom=zoom, col=col, row=row), **kwargs),
-        ffmpeg.input(input_dir / frame_pattern / '{zoom}/{col}/{row}.png'.format(zoom=zoom, col=col+1, row=row), **kwargs),
-        ffmpeg.input(input_dir / frame_pattern / '{zoom}/{col}/{row}.png'.format(zoom=zoom, col=col, row=row+1), **kwargs),
-        ffmpeg.input(input_dir / frame_pattern / '{zoom}/{col}/{row}.png'.format(zoom=zoom, col=col+1, row=row+1), **kwargs),
+        ffmpeg.input(str(input_dir / frame_pattern / '{zoom}/{col}/{row}.png'.format(zoom=zoom, col=col, row=row)), **kwargs),
+        ffmpeg.input(str(input_dir / frame_pattern / '{zoom}/{col}/{row}.png'.format(zoom=zoom, col=col+1, row=row)), **kwargs),
+        ffmpeg.input(str(input_dir / frame_pattern / '{zoom}/{col}/{row}.png'.format(zoom=zoom, col=col, row=row+1)), **kwargs),
+        ffmpeg.input(str(input_dir / frame_pattern / '{zoom}/{col}/{row}.png'.format(zoom=zoom, col=col+1, row=row+1)), **kwargs),
     ]
     # stack
     stacked = ffmpeg.filter(
