@@ -115,15 +115,15 @@ def make_stream_256(frames_dir, result_dir, zoom, col, row):
     return stream
 
 
-def fill_missing_pngs(frames_dir, record):
+def fill_missing_pngs(frames_dir, zoom, col, row):
     frames = list(frames_dir.glob('*[0-9]'))
     count = 0
     for frame, r, c in itertools.product(
         frames,
-        [record.row, record.row + 1],
-        [record.column, record.column + 1]
+        [row, row + 1],
+        [col, col + 1]
     ):
-        path = pathlib.Path(frame / str(record.zoom) /  str(c) / (str(r) + '.png'))
+        path = pathlib.Path(frame / str(zoom) /  str(c) / (str(r) + '.png'))
         if not path.exists():
             # create an empty png
             with path.open('wb') as f:

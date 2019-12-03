@@ -65,6 +65,7 @@ def convert(frames_dir, result_dir, to512):
     for (zoom, col, row), frames in tiles_df.groupby(['zoom', 'column', 'row']):
         # define the path of the  videos
         if to512:
+            fill_missing_pngs(frames_dir, zoom, col, row)
             stream = videomap.streams.make_stream(frames_dir, result_dir,  zoom, col, row)
         else:
             stream = videomap.streams.make_stream_256(frames_dir, result_dir,  zoom, col, row)
