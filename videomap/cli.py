@@ -52,9 +52,15 @@ def convert(frames_dir, result_dir, frame_size, blend):
 
     # if we do 512 frames we only need the even  frames
     if frame_size == 512:
+        # we need the rows and columns one level up
+        # the row,column number 1 level up is modulo 2
+        # jump to the even tile coordinate, representing the 2x2 quad
+        tiles_df['row'] = tiles_df['row'] - tiles_df['row'] % 2
+        tiles_df['column'] = tiles_df['column'] - tiles_df['column'] % 2
+        # now we have double tiles,  drop them
+        tiles_df = tiles_df[['frame', 'row', 'column', 'zoom']].drop_duplicates()
+        # drop level 0
         idx_512 = np.logical_and.reduce([
-            tiles_df.column % 2 == 0,
-            tiles_df.row % 2 == 0,
             tiles_df.zoom > 0
         ])
         tiles_df = tiles_df[idx_512]

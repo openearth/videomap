@@ -96,15 +96,15 @@ def make_stream(frames_dir, result_dir,  zoom, col, row, blend=False, frame_size
 
     if frame_size == 512:
         stream = stack_2x2(frames_dir, zoom, col, row, framerate=framerate)
-        col=int(col/2)
-        row=int(row/2)
+        col=int(col / 2)
+        row=int(row / 2)
     else:
         input_path = (frames_dir / '%05d' / str(zoom) / str(col) / str(row)).with_suffix('.png')
         stream = ffmpeg.input(str(input_path), framerate=framerate)
 
     if blend:
         stream = interpolate(stream, mode='blend')
-    
+
     result_path = pathlib.Path('{result_dir}/{zoom}/{col}/{row}.webm'.format(
         result_dir=result_dir,
         zoom=zoom-1,
