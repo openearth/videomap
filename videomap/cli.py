@@ -19,8 +19,8 @@ frame_pattern = re.compile(
 )
 
 # setup logging
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
-logger.basicConfig(level=logging.DEBUG)
 
 @click.group()
 def cli():
