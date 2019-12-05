@@ -75,7 +75,7 @@ def convert(frames_dir, result_dir, frame_size, blend):
         # define the path of the  videos
         videomap.streams.fill_missing_pngs(frames_dir, zoom, col, row)
         stream = videomap.streams.make_stream(frames_dir, result_dir,  zoom, col, row, frame_size=frame_size, blend=blend)
-        logger.debug('running %s', stream.compile())
+        logger.debug('running %s', " ".join(stream.compile()))
         stream.run()
 
 
