@@ -4,6 +4,7 @@
 import re
 import sys
 import pathlib
+import logging
 
 import click
 import pandas as pd
@@ -16,6 +17,10 @@ import videomap.streams
 frame_pattern = re.compile(
     r'(?P<frame>\d+)/(?P<zoom>\d+)/(?P<column>\d+)/(?P<row>\d+)\.(png|jpg)$'
 )
+
+# setup logging
+logger = logging.getLogger(__name__)
+logger.basicConfig(level=logging.DEBUG)
 
 @click.group()
 def cli():
@@ -70,7 +75,7 @@ def convert(frames_dir, result_dir, frame_size, blend):
         # define the path of the  videos
         videomap.streams.fill_missing_pngs(frames_dir, zoom, col, row)
         stream = videomap.streams.make_stream(frames_dir, result_dir,  zoom, col, row, frame_size=frame_size, blend=blend)
-
+        logger.debug('running %s', stream.compile())
         stream.run()
 
 
